@@ -1,9 +1,9 @@
 package main
 
 import (
-	"fmt"
+    "library-management/database"
 )
 
 func main() {
-	fmt.Println("Hello, World! lets start building lib management system in go lang.")
+    database.Init()
 }
