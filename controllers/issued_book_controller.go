@@ -66,3 +66,28 @@ func IssueBook(c *gin.Context) {
 	c.IndentedJSON(http.StatusCreated, gin.H{"data": issuedBook})
 }
 
+
+func GetIssuedBooksByUser(c* gin.Context){
+	userID := c.Param("user_id")
+	query := "SELECT id, user_id, book_id, issued_date, due_date FROM issued_books WHERE user_id = ?"
+	rows, err := database.DB.Query(query, userID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	defer rows.Close()
+
+	var issuedBooks []models.IssuedBook
+	for rows.Next() {
+		var issuedBook models.IssuedBook
+		if err := rows.Scan(&issuedBook.ID, &issuedBook.UserID, &issuedBook.BookID, &issuedBook.IssuedDate, &issuedBook.DueDate); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+		issuedBooks = append(issuedBooks, issuedBook)
+	}
+
+	c.JSON(http.StatusOK, issuedBooks)
+}
+
+

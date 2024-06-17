@@ -23,6 +23,7 @@ func SetupRouter() *gin.Engine {
 	issuedBookRoutes:= r.Group("/issued")
 	{
 		issuedBookRoutes.POST("", controllers.IssueBook)
+		issuedBookRoutes.GET("/:user_id", controllers.GetIssuedBooksByUser)
 	}
 	return r
 }
