@@ -8,10 +8,21 @@ import (
 func SetupRouter() *gin.Engine {
 	r:= gin.Default()
 
-	book:= r.Group("/books")
+	userRoutes:= r.Group("/users")
 	{
-		book.POST("", controllers.CreateBook)
-		book.GET("", controllers.GetBooks)
+		userRoutes.POST("", controllers.CreateUser)
+		userRoutes.GET("", controllers.GetUsers)
+	}
+	bookRoutes:= r.Group("/books")
+	{
+		bookRoutes.GET("/:isbn", controllers.GetBookByISBN)
+		bookRoutes.POST("", controllers.CreateBook)
+		bookRoutes.GET("", controllers.GetBooks)
+	}
+
+	issuedBookRoutes:= r.Group("/issued")
+	{
+		issuedBookRoutes.POST("", controllers.IssueBook)
 	}
 	return r
 }

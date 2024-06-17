@@ -1,7 +1,7 @@
 package models
 
 type IssuedBook struct {
-    ID         int    `json:"id"`
+    ID         int    `json:"id,omitempty"`
     UserID     int    `json:"user_id"`
     BookID     int    `json:"book_id"`
     IssuedDate string `json:"issued_date"`

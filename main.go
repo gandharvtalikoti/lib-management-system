@@ -7,6 +7,8 @@ import (
 )
 
 func main() {
+
+    
     config.LoadConfig()
     database.ConnectDatabase()
     r := routes.SetupRouter()
