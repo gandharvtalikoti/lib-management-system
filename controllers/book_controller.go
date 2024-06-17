@@ -63,4 +63,30 @@ func GetBookByISBN(c*gin.Context){
 	}	
 	c.IndentedJSON(http.StatusOK, book)
 }
+func SearchBook(c *gin.Context) {
+	name := c.Query("name")
+	if name == "" {
+        c.JSON(http.StatusBadRequest, gin.H{"error": "Name query parameter is required"})
+        return
+    }
+	searchQuery := "%" + name + "%"
+	query := "SELECT id, title, author, isbn, stock, available FROM books WHERE title LIKE ?"
+	rows, err := database.DB.Query(query, searchQuery)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	defer rows.Close()
+
+	var books []models.Book
+	for rows.Next() {
+		var book models.Book
+		if err := rows.Scan(&book.ID, &book.Title, &book.Author, &book.ISBN, &book.Stock, &book.Available); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+		books = append(books, book)
+	}
+	c.IndentedJSON(http.StatusOK, books)
+}
 
