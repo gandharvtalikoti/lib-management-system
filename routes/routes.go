@@ -10,6 +10,7 @@ func SetupRouter() *gin.Engine {
 
 	book:= r.Group("/books")
 	{
+		book.POST("", controllers.CreateBook)
 		book.GET("", controllers.GetBooks)
 	}
 	return r
