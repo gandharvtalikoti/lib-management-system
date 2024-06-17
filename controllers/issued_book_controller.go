@@ -90,4 +90,49 @@ func GetIssuedBooksByUser(c* gin.Context){
 	c.JSON(http.StatusOK, issuedBooks)
 }
 
+func GetOverdueBooks(c* gin.Context){
+	query := "SELECT id, user_id, book_id, issued_date, due_date FROM issued_books WHERE due_date < ?"
+	rows, err := database.DB.Query(query, time.Now().Format("2006-01-02"))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	defer rows.Close()
+
+	var issuedBooks []models.IssuedBook
+	for rows.Next() {
+		var issuedBook models.IssuedBook
+		if err := rows.Scan(&issuedBook.ID, &issuedBook.UserID, &issuedBook.BookID, &issuedBook.IssuedDate, &issuedBook.DueDate); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+		issuedBooks = append(issuedBooks, issuedBook)
+	}
+
+	c.JSON(http.StatusOK, issuedBooks)
+}
+
+func GetOverdueBooksByUser(c* gin.Context){
+	userID := c.Param("user_id")
+	query := "SELECT id, user_id, book_id, issued_date, due_date FROM issued_books WHERE user_id = ? AND due_date < ?"
+	rows, err := database.DB.Query(query, userID, time.Now().Format("2006-01-02"))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	defer rows.Close()
+
+	var issuedBooks []models.IssuedBook
+	for rows.Next() {
+		var issuedBook models.IssuedBook
+		if err := rows.Scan(&issuedBook.ID, &issuedBook.UserID, &issuedBook.BookID, &issuedBook.IssuedDate, &issuedBook.DueDate); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+		issuedBooks = append(issuedBooks, issuedBook)
+	}
+
+	c.JSON(http.StatusOK, issuedBooks)
+}
+
 

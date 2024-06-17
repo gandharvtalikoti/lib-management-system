@@ -24,6 +24,8 @@ func SetupRouter() *gin.Engine {
 	{
 		issuedBookRoutes.POST("", controllers.IssueBook)
 		issuedBookRoutes.GET("/:user_id", controllers.GetIssuedBooksByUser)
+		issuedBookRoutes.GET("overdue", controllers.GetOverdueBooks)
+		issuedBookRoutes.GET("overdue/:user_id", controllers.GetOverdueBooksByUser)
 	}
 	return r
 }
