@@ -1,6 +1,8 @@
 ### Library Management System Backend with GO lang
 
 Welcome to the Library Management System Backend! This RESTful API is designed from the perspective of a librarian, providing an efficient way to manage users, books, and issued books. Built while learning Go, this API showcases practical usage of the Gin framework and MySQL for database operations.
+Before going futher this is the EDR of the system
+
 ![Untitled](https://github.com/gandharvtalikoti/lib-management-system/assets/79464855/c787b4a4-b1c3-44f2-a47d-a6c97a7a3a92)
 
 
