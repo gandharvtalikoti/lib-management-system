@@ -51,11 +51,25 @@ func GetBooks(c *gin.Context) {
 	}
 	c.IndentedJSON(http.StatusOK, books)
 }
+
+func GetBookByID(c *gin.Context) {
+	id := c.Param("id")
+	query := "SELECT id, title, author, isbn, stock, available FROM books WHERE id = ?"
+	row := database.DB.QueryRow(query, id)
+
+	var book models.Book
+	if err := row.Scan(&book.ID, &book.Title, &book.Author, &book.ISBN, &book.Stock, &book.Available); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.IndentedJSON(http.StatusOK, book)
+}
 func GetBookByISBN(c*gin.Context){
 	isbn := c.Param("isbn")
 	query := "SELECT id, title, author, isbn, stock, available FROM books WHERE isbn = ?"
 	row := database.DB.QueryRow(query, isbn)
-
+	
 	var book models.Book
 	if err := row.Scan(&book.ID, &book.Title, &book.Author, &book.ISBN, &book.Stock, &book.Available); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})

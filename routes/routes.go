@@ -15,7 +15,8 @@ func SetupRouter() *gin.Engine {
 	}
 	bookRoutes:= r.Group("/books")
 	{
-		bookRoutes.GET("/:isbn", controllers.GetBookByISBN)
+		bookRoutes.GET("/isbn/:isbn", controllers.GetBookByISBN)
+		bookRoutes.GET("/id/:id", controllers.GetBookByID)
 		bookRoutes.POST("", controllers.CreateBook)
 		bookRoutes.GET("", controllers.GetBooks)
 	}
