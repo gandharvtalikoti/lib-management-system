@@ -39,7 +39,7 @@ func GetBookLog(c *gin.Context) {
 	var bookLog BookLog
 	bookQuery := "SELECT id, title, author, isbn FROM books WHERE id = ?"
 	if err := database.DB.QueryRow(bookQuery, bookID).Scan(&bookLog.BookID, &bookLog.Title, &bookLog.Author, &bookLog.ISBN); err != nil{
-		c.IndentedJSON(http.StatusNotFound, gin.H{"error":err.Error()})
+		c.IndentedJSON(http.StatusNotFound, gin.H{"error":"Book not found"})
 		return
 	}
 	issuedByQuery := `
@@ -58,7 +58,7 @@ func GetBookLog(c *gin.Context) {
 
 		rows, err := database.DB.Query(issuedByQuery, bookID)
 		if err != nil{
-			c.IndentedJSON(http.StatusInternalServerError, gin.H{"error":err.Error()})
+			c.IndentedJSON(http.StatusInternalServerError, gin.H{"error":"Failed to execute query"})
 			return
 		}
 		defer rows.Close()
@@ -74,9 +74,7 @@ func GetBookLog(c *gin.Context) {
 		}
 		c.IndentedJSON(http.StatusOK, bookLog)
 
-
 	}
-
 
 func CreateBook(c *gin.Context) {
 	var book models.Book

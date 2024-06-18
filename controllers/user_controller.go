@@ -45,7 +45,7 @@ func GetUserDetails(c *gin.Context) {
 	// Get the user details
 	userQuery := "SELECT id, name, email FROM users WHERE id =?"
 	if err := database.DB.QueryRow(userQuery, userID).Scan(&UserDetails.UserID, &UserDetails.Name, &UserDetails.Email); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get user details."})
 		return
 	}
 
@@ -64,7 +64,7 @@ func GetUserDetails(c *gin.Context) {
 
 	rows, err := database.DB.Query(issusedBooksQuery, userID)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get issued books."})
 		return
 	}
     defer rows.Close()
@@ -72,7 +72,7 @@ func GetUserDetails(c *gin.Context) {
     for rows.Next() {
         var issuedBook IssuedBooksDetails
         if err := rows.Scan(&issuedBook.ID, &issuedBook.BookId, &issuedBook.Title, &issuedBook.Author, &issuedBook.ISBN, &issuedBook.IssuedDate, &issuedBook.DueDate, &issuedBook.ReturnedDate, &issuedBook.Overdue); err != nil{
-            c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+            c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": "Failed to scan issued books."})
             return
         }
         UserDetails.IssuedBooks = append(UserDetails.IssuedBooks, issuedBook)
@@ -83,7 +83,7 @@ func GetUserDetails(c *gin.Context) {
 func CreateUser(c *gin.Context) {
 	var user models.User
 	if err := c.ShouldBindJSON(&user); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input."})
 		return
 	}
 
@@ -121,7 +121,7 @@ func GetUsers(c *gin.Context) {
 	query := "SELECT id, name, email FROM users"
 	rows, err := database.DB.Query(query)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get users."})
 		return
 	}
 	defer rows.Close()
@@ -145,20 +145,10 @@ func GetUserByID(c *gin.Context) {
 	var user models.User
 	err := database.DB.QueryRow(query, id).Scan(&user.ID, &user.Name, &user.Email)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get user."})
 		return
 	}
 	c.JSON(http.StatusOK, user)
 
 }
 
-func DeleteUser(c *gin.Context) {
-	id := c.Param("id")
-	query := "DELETE FROM users WHERE id = ?"
-	_, err := database.DB.Exec(query, id)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-	c.JSON(http.StatusOK, gin.H{"message": "User deleted successfully"})
-}
