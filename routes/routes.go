@@ -12,6 +12,7 @@ func SetupRouter() *gin.Engine {
 	{
 		userRoutes.POST("", controllers.CreateUser)
 		userRoutes.GET("", controllers.GetUsers)
+		userRoutes.GET("/details/:user_id", controllers.GetUserDetails)
 	}
 	bookRoutes:= r.Group("/books")
 	{
@@ -19,6 +20,7 @@ func SetupRouter() *gin.Engine {
 		bookRoutes.GET("/id/:id", controllers.GetBookByID)
 		bookRoutes.POST("", controllers.CreateBook)
 		bookRoutes.GET("", controllers.GetBooks)
+		bookRoutes.GET("/book/log/:book_id", controllers.GetBookLog)
 	}
 
 	issuedBookRoutes:= r.Group("/issued")
