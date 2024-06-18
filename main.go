@@ -11,6 +11,6 @@ func main() {
     
     config.LoadConfig()
     database.ConnectDatabase()
-    r := routes.SetupRouter()
-    r.Run()
+   r := routes.SetupRouter()
+   r.Run()
 }

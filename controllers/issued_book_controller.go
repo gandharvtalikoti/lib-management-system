@@ -66,6 +66,28 @@ func IssueBook(c *gin.Context) {
 	c.IndentedJSON(http.StatusCreated, gin.H{"data": issuedBook})
 }
 
+func ReturnBook(c* gin.Context){
+	var returnedBook models.IssuedBook
+	if err := c.ShouldBind(&returnedBook); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	
+	query := "DELETE FROM issued_books WHERE book_id = ? AND user_id = ?"
+	if _, err := database.DB.Exec(query, returnedBook.BookID, returnedBook.UserID); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	query = "UPDATE books SET available = available+1 WHERE id = ?"
+	if _, err := database.DB.Exec(query, returnedBook.BookID); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Book returned successfully"})
+}
+
 
 func GetIssuedBooksByUser(c* gin.Context){
 	userID := c.Param("user_id")
@@ -90,9 +112,11 @@ func GetIssuedBooksByUser(c* gin.Context){
 	c.JSON(http.StatusOK, issuedBooks)
 }
 
+
+
 func GetOverdueBooks(c* gin.Context){
-	query := "SELECT id, user_id, book_id, issued_date, due_date FROM issued_books WHERE due_date < ?"
-	rows, err := database.DB.Query(query, time.Now().Format("2006-01-02"))
+    query := `SELECT id, user_id, book_id, issued_date, due_date, returned_date FROM issued_books WHERE (returned_date IS NULL AND due_date < CURDATE()) OR (returned_date IS NOT NULL AND DATE_ADD(issued_date, INTERVAL 30 DAY) < returned_date)`
+	rows, err := database.DB.Query(query)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -102,7 +126,7 @@ func GetOverdueBooks(c* gin.Context){
 	var issuedBooks []models.IssuedBook
 	for rows.Next() {
 		var issuedBook models.IssuedBook
-		if err := rows.Scan(&issuedBook.ID, &issuedBook.UserID, &issuedBook.BookID, &issuedBook.IssuedDate, &issuedBook.DueDate); err != nil {
+        if err := rows.Scan(&issuedBook.ID, &issuedBook.UserID, &issuedBook.BookID, &issuedBook.IssuedDate, &issuedBook.DueDate, &issuedBook.ReturnedDate); err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}

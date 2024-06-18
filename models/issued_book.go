@@ -6,4 +6,5 @@ type IssuedBook struct {
     BookID     int    `json:"book_id"`
     IssuedDate string `json:"issued_date"`
     DueDate    string `json:"due_date"`
+    ReturnedDate string `json:"returned_date,omitempty"`
 }
