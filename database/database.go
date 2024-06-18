@@ -52,7 +52,6 @@ func createTables() {
         book_id INT NOT NULL,
         issued_date DATE NOT NULL,
         due_date DATE NOT NULL,
-        returned_date DATE,
         FOREIGN KEY (user_id) REFERENCES users(id),
         FOREIGN KEY (book_id) REFERENCES books(id),
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP

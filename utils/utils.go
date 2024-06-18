@@ -1,7 +1,8 @@
 package utils
 
 import (
-    "time"
+	"log"
+	"time"
 )
 
 // CalculateFine calculates the fine based on the issued date and returned date.
@@ -23,5 +24,6 @@ func CalculateFine(issuedDateStr, returnedDateStr string) (float64, error) {
     } else {
         fine = 0
     }
+	log.Println(fine)
     return fine, nil
 }

@@ -77,6 +77,8 @@ func GetBookByISBN(c*gin.Context){
 	}	
 	c.IndentedJSON(http.StatusOK, book)
 }
+
+
 func SearchBook(c *gin.Context) {
 	name := c.Query("name")
 	if name == "" {
