@@ -20,6 +20,7 @@ func SetupRouter() *gin.Engine {
 		bookRoutes.GET("/id/:id", controllers.GetBookByID)
 		bookRoutes.POST("", controllers.CreateBook)
 		bookRoutes.GET("", controllers.GetBooks)
+		bookRoutes.GET("/book/log/:book_id", controllers.GetBookLog)
 	}
 
 	issuedBookRoutes:= r.Group("/issued")
