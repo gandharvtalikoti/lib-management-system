@@ -155,7 +155,7 @@ func SearchBook(c *gin.Context) {
         return
     }
 	searchQuery := "%" + name + "%"
-	query := "SELECT id, title, author, isbn, stock, available FROM books WHERE title LIKE ?"
+	query := "SELECT id, title, author, isbn, stock, available FROM books WHERE title ILIKE ?"
 	rows, err := database.DB.Query(query, searchQuery)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
