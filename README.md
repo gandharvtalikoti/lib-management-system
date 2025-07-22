@@ -180,7 +180,4 @@ Before going futher this is the ERD of the system
 This Library Management System Backend provides a comprehensive set of features to manage library operations effectively. Feel free to explore and contribute to the project!
 
 
-### Contact
-
-For any questions or suggestions, please contact (mailto:gandharvwork@example.com).
 
